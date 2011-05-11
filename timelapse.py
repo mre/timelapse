@@ -3,6 +3,7 @@ import objc										# Objective-C bindings for Python
 import threading              # For recorder and renderer
 import time                   # To create subdirectories
 from recorder import Recorder # Takes screenshots
+from encoder import Encoder    # Creates timelapse video
 from datetime import date			# For session subfolders
 from Foundation import *			# For NSDefaultRunLoopMode
 from AppKit import *					# For NSApplication
@@ -17,6 +18,7 @@ dir_base = os.path.expanduser("~") 	# Base directory
 dir_app = "timelapse"				# Output directory
 dir_pictures = "Pictures"			# Place for pictures in filesystem
 dir_movies = "Movies"				# Place for movies in filesystem
+dir_resources = "resources"
 subdir_suffix = "Session-" + time.strftime("%Y%m%d") # Name of subdirectory
 image_recording = "record.gif"      # App icon recording
 image_idle = "stop.gif"             # App icon idle
@@ -55,8 +57,8 @@ class Timelapse(NSObject):
     self.setStatus()
 
   def loadIcons(self):
-    self.icon_recording = NSImage.alloc().initWithContentsOfFile_(image_recording)
-    self.icon_idle = NSImage.alloc().initWithContentsOfFile_(image_idle)
+    self.icon_recording = NSImage.alloc().initWithContentsOfFile_(os.path.join(dir_resources, image_recording))
+    self.icon_idle = NSImage.alloc().initWithContentsOfFile_(os.path.join(dir_resources, image_idle))
 
   def setStatus(self):
     ''' Sets the image and menu text according to recording status '''
@@ -84,10 +86,10 @@ class Timelapse(NSObject):
   def startStopRecording_(self, notification):
     if self.recording:
       self.recorder.join()
-    # Start encoder
-    if encode:
-      self.encoder = Encoder(self.encoder_output_basedir)
-      self.encoder.start()
+      # Create timelapse after recording?
+      if encode:
+        self.encoder = Encoder(self.encoder_output_basedir)
+        self.encoder.start()
     else:
       output_dir = self.createDir(self.recorder_output_basedir)
       self.recorder = Recorder(output_dir, screenshot_interval)
