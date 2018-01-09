@@ -1,7 +1,9 @@
-import os  # For directory traversing
-import time  # To create subdirectories
+import os
+import time
+import subprocess
 
 from PyObjCTools import AppHelper
+from AppKit import *
 
 from encoder import Encoder  # Creates timelapse video
 from recorder import Recorder  # Takes screenshots
@@ -32,12 +34,16 @@ class Timelapse(NSObject):
     """ Creates a timelapse video """
 
     def applicationDidFinishLaunching_(self, notification):
+        self.check_dependencies()
+
         # Initialize recording
         self.recording = start_recording
 
         # Set correct output paths
         self.recorder_output_basedir = os.path.join(dir_base, dir_pictures, dir_app)
         self.encoder_output_basedir = os.path.join(dir_base, dir_movies)
+
+        self.image_dir = self.create_dir(self.recorder_output_basedir)
 
         # Create a reference to the statusbar (menubar)
         self.statusbar = NSStatusBar.systemStatusBar()
@@ -86,20 +92,20 @@ class Timelapse(NSObject):
             self.recorder.join()
             # Create timelapse after recording?
             if encode:
-                self.encoder = Encoder(self.encoder_output_basedir)
+                self.encoder = Encoder(self.image_dir, self.encoder_output_basedir)
                 self.encoder.start()
         else:
-            output_dir = self.createDir(self.recorder_output_basedir)
-            self.recorder = Recorder(output_dir, screenshot_interval)
+            self.recorder = Recorder(self.image_dir, screenshot_interval)
             self.recorder.start()
         self.recording = not self.recording
         self.setStatus()
 
-    def createDir(self, base_dir):
+    @objc.python_method
+    def create_dir(self, base_dir):
         """ Creates a specified directory and the path to it if necessary """
         if create_session_subdir:
             # Create a new subdirectory
-            output_dir = os.path.join(base_dir, self.getSubDir(base_dir))
+            output_dir = os.path.join(base_dir, self.get_sub_dir(base_dir))
         else:
             # Don't create a subdirectory. Use base directory for output
             output_dir = base_dir
@@ -107,12 +113,13 @@ class Timelapse(NSObject):
         try:
             print(output_dir)
             os.makedirs(output_dir)
-        except OSError:
-            print("oops")
+        except OSError, e:
+            print("Error while creating directory:", e)
             exit()
         return output_dir
 
-    def getSubDir(self, base_dir):
+    @objc.python_method
+    def get_sub_dir(self, base_dir):
         """ Returns the next nonexistend subdirectory to base_dir """
         subdir_base = os.path.join(base_dir, subdir_suffix)
         # Check if we can use subdir without any session id
@@ -124,6 +131,17 @@ class Timelapse(NSObject):
             session_number += 1
             subdir = subdir_base + "-" + str(session_number)
         return subdir
+
+    def check_dependencies(self):
+        try:
+            subprocess.check_call(['ffmpeg'])
+        except subprocess.CalledProcessError:
+            print "ffmpeg command was found"
+            pass  # ffmpeg is found, but returns non-zero exit as expected
+            # This is a quick and dirty check; it leaves some spurious output
+            # for the user to puzzle over.
+        except OSError:
+            print not_found_msg
 
 
 if __name__ == "__main__":

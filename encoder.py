@@ -1,26 +1,25 @@
-import datetime  # Filename
 from threading import Thread  # Encoder is a thread
-import subprocess  # System call
-import os
+import subprocess
 
 not_found_msg = """
 The ffmpeg command was not found;
-ffmpeg is used by this script to make an avi file from a set of pngs.
+ffmpeg is used by this script to make a video file from a set of pngs.
 It is typically not installed by default distros , but it is widely available.
+On macOS, try running `brew install ffmpeg`.
 """
 
 
 class Encoder(Thread):
     """Create a video file from images"""
 
-    def __init__(self, output_dir):
+    def __init__(self, input_dir, output_dir):
         # Initialize the thread
         Thread.__init__(self)
 
         # Set config options
-        self.output_dir = output_dir
+        self.input = "{}/*.png".format(input_dir)
+        self.output = "{}/output.mp4".format(output_dir)
 
-        self.checkLibrary()
         print("Encoder started")
 
     def join(self, timeout=None):
@@ -28,48 +27,15 @@ class Encoder(Thread):
         Thread.join(self)
 
     def run(self):
-        """ Render video """
-
-    def checkLibrary(self):
-        try:
-            subprocess.check_call(['ffmpeg'])
-        except subprocess.CalledProcessError:
-            print "ffmpeg command was found"
-            pass  # ffmpeg is found, but returns non-zero exit as expected
-            # This is a quick and dirty check; it leaves some spurious output
-            # for the user to puzzle over.
-        except OSError:
-            print not_found_msg
-
-        # Now that we have graphed images of the dataset, we will stitch them
-        # together using Mencoder to create a movie.  Each image will become
-        # a single frame in the movie.
-        #
-        # We want to use Python to make what would normally be a command line
-        # call to Mencoder.  Specifically, the command line call we want to
-        # emulate is (without the initial '#'):
-        # mencoder mf://*.png -mf type=png:w=800:h=600:fps=25 -ovc lavc -lavcopts vcodec=mpeg4 -oac copy -o output.avi
-        # See the MPlayer and Mencoder documentation for details.
-        #
-
-        command = ('mencoder',
-                   'mf://*.png',
-                   '-mf',
-                   'type=png:w=800:h=600:fps=25',
-                   '-ovc',
-                   'lavc',
-                   '-lavcopts',
-                   'vcodec=mpeg4',
-                   '-oac',
-                   'copy',
-                   '-o',
-                   'output.avi')
-
-        # os.spawnvp(os.P_WAIT, 'mencoder', command)
+        """
+        Now that we have graphed images of the dataset, we will stitch them
+        together using ffmpeg to create a movie.  Each image will become
+        a single frame in the movie.
+        """
+        command = (
+            "ffmpeg", "-framerate", "30", "-pattern_type", "glob", "-i", self.input, self.output
+        )
 
         print "\n\nabout to execute:\n%s\n\n" % ' '.join(command)
         subprocess.check_call(command)
-
-        print "\n\n The movie was written to 'output.avi'"
-
-        print "\n\n You may want to delete *.png now.\n\n"
+        print "\n\n The movie was saved to `{}`".format(self.output)
