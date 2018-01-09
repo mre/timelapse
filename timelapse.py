@@ -1,13 +1,10 @@
 import os  # For directory traversing
-import objc  # Objective-C bindings for Python
-import threading  # For recorder and renderer
 import time  # To create subdirectories
-from recorder import Recorder  # Takes screenshots
+
+from PyObjCTools import AppHelper
+
 from encoder import Encoder  # Creates timelapse video
-from datetime import date  # For session subfolders
-from Foundation import *  # For NSDefaultRunLoopMode
-from AppKit import *  # For NSApplication
-from PyObjCTools import NibClassBuilder, AppHelper
+from recorder import Recorder  # Takes screenshots
 
 # Configuration
 start_recording = False  # Start recording on launch
@@ -32,7 +29,7 @@ tooltip_running = "Recording | " + tooltip_idle  # Tooltip when recording
 ###############
 
 class Timelapse(NSObject):
-    ''' Creates a timelapse video '''
+    """ Creates a timelapse video """
 
     def applicationDidFinishLaunching_(self, notification):
         # Initialize recording
@@ -62,7 +59,7 @@ class Timelapse(NSObject):
         self.icon_idle = NSImage.alloc().initWithContentsOfFile_(os.path.join(dir_resources, image_idle))
 
     def setStatus(self):
-        ''' Sets the image and menu text according to recording status '''
+        """ Sets the image and menu text according to recording status """
         if self.recording:
             self.statusitem.setImage_(self.icon_recording)
             self.recordButton.setTitle_(text_recorder_running)
@@ -73,7 +70,7 @@ class Timelapse(NSObject):
             self.statusitem.setToolTip_(tooltip_idle)
 
     def createMenu(self):
-        ''' Status bar menu '''
+        """ Status bar menu """
         menu = NSMenu.alloc().init()
         # Bind record event
         self.recordButton = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(
@@ -99,7 +96,7 @@ class Timelapse(NSObject):
         self.setStatus()
 
     def createDir(self, base_dir):
-        ''' Creates a specified directory and the path to it if necessary '''
+        """ Creates a specified directory and the path to it if necessary """
         if create_session_subdir:
             # Create a new subdirectory
             output_dir = os.path.join(base_dir, self.getSubDir(base_dir))
@@ -116,7 +113,7 @@ class Timelapse(NSObject):
         return output_dir
 
     def getSubDir(self, base_dir):
-        ''' Returns the next nonexistend subdirectory to base_dir '''
+        """ Returns the next nonexistend subdirectory to base_dir """
         subdir_base = os.path.join(base_dir, subdir_suffix)
         # Check if we can use subdir without any session id
         subdir = subdir_base

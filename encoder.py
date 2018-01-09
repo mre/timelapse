@@ -1,7 +1,7 @@
 import datetime  # Filename
-import time  # Going to sleep
-from threading import Thread, Event  # Encoder is a thread
+from threading import Thread  # Encoder is a thread
 import subprocess  # System call
+import os
 
 not_found_msg = """
 The ffmpeg command was not found;
@@ -11,7 +11,7 @@ It is typically not installed by default distros , but it is widely available.
 
 
 class Encoder(Thread):
-    '''Create a video file from images'''
+    """Create a video file from images"""
 
     def __init__(self, output_dir):
         # Initialize the thread
@@ -23,20 +23,12 @@ class Encoder(Thread):
         self.checkLibrary()
         print("Encoder started")
 
-    def join(self):
-        ''' Hard shutdown '''
+    def join(self, timeout=None):
+        """ Hard shutdown """
         Thread.join(self)
 
     def run(self):
-        ''' Render video '''
-
-    def getFilename(self):
-        # The id is the unique part of the filename.
-        id = str(datetime.datetime.now())
-        # Format the id a bit (remove whitspace and special characters)
-        id = id.replace(' ', '').replace(':', '').replace('.', '')
-        filename = os.path.join(self.output_dir, id) + "." + "avi"
-        return filename
+        """ Render video """
 
     def checkLibrary(self):
         try:
