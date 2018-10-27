@@ -1,14 +1,19 @@
-os: osx
-language: python
-# python:
-#  - "3.6"
+# Mac OS X Python build
+language: objective_c
+python:
+- "3.6"
 before_install:
-  - brew update
+  # install python via brew
   - brew install python3
+  # make brews python the system default
+  - brew link --overwrite python3
+  - which python
+  - python --version
+  # pip init
+  - pip install pytest
 # command to install dependencies
 install:
-  - pip3 install pytest
-  - pip3 install -r requirements.txt
+  - pip install -r requirements.txt
 # - pip install .
 # command to run tests
 script:
