@@ -1,18 +1,23 @@
 # Mac OS X Python build
+# admin access required
 sudo:
   required
+# operating system
 os:
   osx
+# language used by the os
 language:
   objective-c
+# cache directories
 cache:
   directories:
     - $HOME/.cache/pip3
+# clear cache log files
 before_cache:
   - rm -f $HOME/.cache/pip3/log/debug.log
 python:
 - "3.6"
-before_install:
+before_install:s
   - which python
   - python --version
   # pip init
@@ -24,4 +29,3 @@ install:
 # command to run tests
 script:
   - pytest
-  - python3 timelapse.py
