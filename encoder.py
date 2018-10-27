@@ -1,5 +1,6 @@
 from threading import Thread  # Encoder is a thread
 import subprocess
+import time, os, fnmatch, shutil
 
 not_found_msg = """
 The ffmpeg command was not found;
@@ -18,7 +19,9 @@ class Encoder(Thread):
 
         # Set config options
         self.input = "{}/*.png".format(input_dir)
-        self.output = "{}/output.mp4".format(output_dir)
+        t = time.localtime()
+        timestamp = time.strftime('%b-%d-%Y_%H:%M', t)
+        self.output = "{}/output-{}.mp4".format(output_dir, timestamp)
 
         print("Encoder started")
 
