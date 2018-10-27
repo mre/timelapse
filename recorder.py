@@ -8,7 +8,7 @@ class Recorder(Thread):
     Takes a screenshot every 'interval' seconds and saves it into output_dir or a subdirectory thereof.
     """
 
-    def __init__(self, output_dir, interval=4):
+    def __init__(self, output_dir, interval=7):
         # Initialize the thread
         Thread.__init__(self)
 
