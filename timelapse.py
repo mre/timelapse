@@ -136,12 +136,12 @@ class Timelapse(NSObject):
         try:
             subprocess.check_call(['ffmpeg'])
         except subprocess.CalledProcessError:
-            print "ffmpeg command was found"
+            print("ffmpeg command was found")
             pass  # ffmpeg is found, but returns non-zero exit as expected
             # This is a quick and dirty check; it leaves some spurious output
             # for the user to puzzle over.
         except OSError:
-            print not_found_msg
+            print(not_found_msg)
 
 
 if __name__ == "__main__":
