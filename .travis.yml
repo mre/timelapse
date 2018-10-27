@@ -1,23 +1,26 @@
 # Mac OS X Python build
+sudo:
+  required
 os:
   osx
 language:
   objective-c
+cache:
+  directories:
+    - $HOME/.cache/pip3
+before_cache:
+  - rm -f $HOME/.cache/pip3/log/debug.log
 python:
 - "3.6"
 before_install:
-  # install python via brew
-  - brew install python3
-  # make brews python the system default
-  - brew link --overwrite python3
   - which python
   - python --version
   # pip init
-  - pip install pytest
+  - pip3 install pytest
 # command to install dependencies
 install:
-  - pip install -r requirements.txt
-# - pip install .
+  - pip3 install -r requirements.txt
 # command to run tests
 script:
-  - timelapse.py
+  - pytest
+  - python3 timelapse.py
