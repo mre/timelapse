@@ -1,5 +1,8 @@
 # Mac OS X Python build
-language: objective_c
+os:
+  osx
+language:
+  objective-c
 python:
 - "3.6"
 before_install:
