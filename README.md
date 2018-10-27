@@ -2,6 +2,24 @@
 
 ...takes screenshots and creates a video out of them to make a timelapse.
 
+## Goals
+
+* Simple
+* Minimal CPU usage
+* Extendable
+
+## Why use this project?
+
+There are many alternative solutions available.
+Most of them fall into one of these categories:
+
+* Commercial applications
+* Custom scripts based on Automator and AppleScript
+* Freeware
+
+This project provides an Open-Source alternative that is both,
+easy to use and understand.
+
 ## Requirements
 
 * macOS (any version)
