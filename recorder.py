@@ -12,10 +12,10 @@ class Recorder(Thread):
         # Initialize the thread
         Thread.__init__(self)
 
-        # Provide a way to stop the recorder
-        self._stop = Event()
+         # Provide a way to stop the recorder
+         self._stop = Event()
 
-        # Set config options
+         # Set config options
         self.output_dir = output_dir
         self.interval = interval
         self.format = "png"
