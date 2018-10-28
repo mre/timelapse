@@ -5,7 +5,7 @@ import subprocess
 from PyObjCTools import AppHelper
 from AppKit import *
 
-from encoder import Encoder  # Creates timelapse video
+from encoder import Encoder, not_found_msg  # Creates timelapse video
 from recorder import Recorder  # Takes screenshots
 
 # Configuration
@@ -113,7 +113,7 @@ class Timelapse(NSObject):
         try:
             print(output_dir)
             os.makedirs(output_dir)
-        except OSError, e:
+        except OSError as e:
             print("Error while creating directory:", e)
             exit()
         return output_dir
