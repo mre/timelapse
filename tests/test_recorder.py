@@ -1,6 +1,6 @@
 import unittest
 import sys
-sys.path.append("../src") # Parent directory
+sys.path.append("../src")
 
 from recorder import Recorder
 import threading
