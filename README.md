@@ -1,5 +1,7 @@
 # Timelapse
 
+[![Build Status](https://travis-ci.org/mre/timelapse.svg?branch=master)](https://travis-ci.org/mre/timelapse)
+
 ...takes screenshots and creates a video out of them to make a timelapse.
 
 ## Goals

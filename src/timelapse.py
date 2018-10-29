@@ -5,7 +5,7 @@ import subprocess
 from PyObjCTools import AppHelper
 from AppKit import *
 
-from encoder import Encoder  # Creates timelapse video
+from encoder import Encoder, not_found_msg  # Creates timelapse video
 from recorder import Recorder  # Takes screenshots
 
 # Configuration
@@ -22,9 +22,11 @@ image_recording = "record.gif"  # App icon recording
 image_idle = "stop.gif"  # App icon idle
 create_session_subdir = True  # New screenshot directory for each session
 create_movies = True  # Create movies from screenshots after recording
-text_recorder_running = "Stop recording"  # Menu item text when recorder is running
+# Menu item text when recorder is running
+text_recorder_running = "Stop recording"
 text_recorder_idle = "Start recording"  # Menu item text when recorder is idle
-tooltip_idle = "Timelapse screen recorder"  # Tooltip of menu icon when not recording
+# Tooltip of menu icon when not recording
+tooltip_idle = "Timelapse screen recorder"
 tooltip_running = "Recording | " + tooltip_idle  # Tooltip when recording
 
 
@@ -40,7 +42,8 @@ class Timelapse(NSObject):
         self.recording = start_recording
 
         # Set correct output paths
-        self.recorder_output_basedir = os.path.join(dir_base, dir_pictures, dir_app)
+        self.recorder_output_basedir = os.path.join(
+            dir_base, dir_pictures, dir_app)
         self.encoder_output_basedir = os.path.join(dir_base, dir_movies)
 
         self.image_dir = self.create_dir(self.recorder_output_basedir)
@@ -49,7 +52,8 @@ class Timelapse(NSObject):
         self.statusbar = NSStatusBar.systemStatusBar()
 
         # Create item in statusbar
-        self.statusitem = self.statusbar.statusItemWithLength_(NSVariableStatusItemLength)
+        self.statusitem = self.statusbar.statusItemWithLength_(
+            NSVariableStatusItemLength)
         self.statusitem.setHighlightMode_(1)  # Highlight upon clicking
 
         # Create a simple menu and bind it to the status item
@@ -61,8 +65,10 @@ class Timelapse(NSObject):
         self.setStatus()
 
     def loadIcons(self):
-        self.icon_recording = NSImage.alloc().initWithContentsOfFile_(os.path.join(dir_resources, image_recording))
-        self.icon_idle = NSImage.alloc().initWithContentsOfFile_(os.path.join(dir_resources, image_idle))
+        self.icon_recording = NSImage.alloc().initWithContentsOfFile_(
+            os.path.join("src", dir_resources, image_recording))
+        self.icon_idle = NSImage.alloc().initWithContentsOfFile_(
+            os.path.join("src", dir_resources, image_idle))
 
     def setStatus(self):
         """ Sets the image and menu text according to recording status """
@@ -83,7 +89,8 @@ class Timelapse(NSObject):
             text_recorder_idle, 'startStopRecording:', '')
         menu.addItem_(self.recordButton)
         # Quit event
-        menuitem = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_('Quit', 'terminate:', '')
+        menuitem = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(
+            'Quit', 'terminate:', '')
         menu.addItem_(menuitem)
         return menu
 
@@ -92,7 +99,8 @@ class Timelapse(NSObject):
             self.recorder.join()
             # Create timelapse after recording?
             if encode:
-                self.encoder = Encoder(self.image_dir, self.encoder_output_basedir)
+                self.encoder = Encoder(
+                    self.image_dir, self.encoder_output_basedir)
                 self.encoder.start()
         else:
             self.recorder = Recorder(self.image_dir, screenshot_interval)
@@ -113,7 +121,7 @@ class Timelapse(NSObject):
         try:
             print(output_dir)
             os.makedirs(output_dir)
-        except OSError, e:
+        except OSError as e:
             print("Error while creating directory:", e)
             exit()
         return output_dir
