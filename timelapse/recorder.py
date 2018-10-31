@@ -26,8 +26,8 @@ class Recorder(Thread):
 
     def join(self, timeout=None):
         """ Stop recording """
-        self._stop.set()
-        print("Recorder stopped. Total recording time: " + self.get_recording_time() + ".")
+         self._stop.set()
+         print("Recorder stopped. Total recording time: " + self.get_recording_time() + ".")
         Thread.join(self)
 
     def run(self):
