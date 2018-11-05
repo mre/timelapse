@@ -1,31 +1,34 @@
-# Mac OS X Python build
-# admin access required
 sudo:
   required
-# operating system
 os:
   osx
-# language used by the os
-language:
-  objective-c
-# cache directories
+
+language: python
+
 cache:
   directories:
-    - $HOME/.cache/pip3
-# clear cache log files
-before_cache:
-  - rm -f $HOME/.cache/pip3/log/debug.log
-python:
-- "3.6"
-before_install:
-  - which python
-  - python --version
-  # pip init
-  - pip3 install pytest
-# command to install dependencies
+    - $HOME/.pyenv_cache
+    - $HOME/.cache/pip
+
+matrix:
+  include:
+    - env: "PYENV_VERSION=2.7.15"
+    - env: "PYENV_VERSION=3.6.6"
+
+env:
+  global:
+    - PYENV_ROOT="$HOME/.pyenv"
+    - PATH="$PYENV_ROOT/bin:$PATH"
+    - PYTHON_BUILD_CACHE_PATH=$HOME/.pyenv_cache
+
 install:
   - brew install ffmpeg
-  - pip3 install -r requirements.txt
-# command to run tests
+  - git clone https://github.com/pyenv/pyenv.git $HOME/.pyenv
+  - eval "$(pyenv init -)"
+  - pyenv install $PYENV_VERSION
+  - pyenv global $PYENV_VERSION
+  - python --version
+  - pip install -r requirements.txt
+
 script:
   - pytest
