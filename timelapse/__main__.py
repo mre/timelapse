@@ -66,9 +66,9 @@ class Timelapse(NSObject):
 
     def loadIcons(self):
         self.icon_recording = NSImage.alloc().initWithContentsOfFile_(
-            os.path.join("src", dir_resources, image_recording))
+            os.path.join("timelapse", dir_resources, image_recording))
         self.icon_idle = NSImage.alloc().initWithContentsOfFile_(
-            os.path.join("src", dir_resources, image_idle))
+            os.path.join("timelapse", dir_resources, image_idle))
 
     def setStatus(self):
         """ Sets the image and menu text according to recording status """

@@ -38,7 +38,7 @@ pip install -r requirements.txt
 Now run the main application from the commmand-line:
 
 ```shell
-python timelapse.py
+python timelapse
 ```
 
 After that, a new icon appears in the menubar.  
