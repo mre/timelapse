@@ -120,8 +120,10 @@ class Timelapse(NSObject):
             output_dir = base_dir
         # Create path if it doesn't exist
         try:
-            print(output_dir)
+            print(f"Output directory: {output_dir}")
             os.makedirs(output_dir)
+            print("Ready for recording! Start recording from the menubar icon.")
+
         except OSError as e:
             print("Error while creating directory:", e)
             exit()
@@ -143,7 +145,7 @@ class Timelapse(NSObject):
 
     def check_dependencies(self):
         try:
-            subprocess.run(['ffmpeg'], check=True, capture_output=True, timeout=1.0)
+            subprocess.run(['ffmpeg'], check=True, capture_output=True, timeout=10.0)
         except subprocess.CalledProcessError:
             print("ffmpeg command was found")
             pass  # ffmpeg is found, but returns non-zero exit as expected
