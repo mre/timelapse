@@ -2,7 +2,7 @@ import unittest
 import sys
 
 from timelapse.recorder import Recorder
-import threading
+import multiprocessing
 
 """
 - Test class for the recorder class in the main directory.
@@ -15,7 +15,7 @@ class TestRecorder(unittest.TestCase):
     # Test init method
     def test_init_method(self):
         recorder = Recorder("./", 8)
-        self.assertEqual(type(recorder._stop), threading.Event)
+        self.assertEqual(type(recorder._stop), multiprocessing.synchronize.Event)
         self.assertEqual(recorder.interval, 8)
 
     # Test Case #2: get_recording_time(self)
@@ -32,7 +32,7 @@ class TestRecorder(unittest.TestCase):
         recorder = Recorder("./", 8)
         
         # Assert the boolean is false upon initialisation.
-        self.assertEqual(recorder._stop.isSet(), False)
+        self.assertEqual(recorder._stop.is_set(), False)
 
         # Can't figure out how but a mocking solution would work well.
         # Perhaps try count how many times the screenshot() and
