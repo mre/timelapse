@@ -36,9 +36,11 @@ class Encoder(Thread):
         a single frame in the movie.
         """
         command = (
-            "ffmpeg", "-framerate", "30", "-pattern_type", "glob", "-i", self.input, self.output
+            "ffmpeg", "-framerate", "30", "-pattern_type", "glob",
+            "-loglevel", "quiet", "-stats",
+            "-i", self.input, self.output
         )
 
         print("\n\nabout to execute:\n%s\n\n" % ' '.join(command))
-        subprocess.check_call(command)
+        subprocess.run(command, check=True)
         print("\n\n The movie was saved to `{}`".format(self.output))

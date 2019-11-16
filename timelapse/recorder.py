@@ -1,4 +1,5 @@
-import os  # Taking screenshot
+import os
+import subprocess  # Taking screenshot
 import datetime  # Filename
 from multiprocessing import Process, Event
 
@@ -56,5 +57,7 @@ class Recorder(Process):
         """ This method uses Mac OSX screencapture from the commandline """
         filename = self.get_filename()
         print("Taking screenshot [" + filename + "]")
-        os.system("screencapture -S -o -x -t" + self.format + " " + filename)
+        subprocess.run(
+            ['screencapture', '-S', '-o', '-x', '-t', self.format, filename],
+            check=True)
         self.screenshot_counter += 1
