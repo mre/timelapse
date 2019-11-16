@@ -145,7 +145,7 @@ class Timelapse(NSObject):
 
     def check_dependencies(self):
         try:
-            subprocess.run(['ffmpeg'], check=True, capture_output=True, timeout=1.0)
+            subprocess.run(['ffmpeg'], check=True, capture_output=True, timeout=10.0)
         except subprocess.CalledProcessError:
             print("ffmpeg command was found")
             pass  # ffmpeg is found, but returns non-zero exit as expected
