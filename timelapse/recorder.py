@@ -1,19 +1,20 @@
 import os  # Taking screenshot
 import datetime  # Filename
-from threading import Thread, Event  # Recorder is a thread
+from multiprocessing import Process, Event
 
 
-class Recorder(Thread):
+class Recorder(Process):
     """
     Takes a screenshot every 'interval' seconds and saves it into output_dir or a subdirectory thereof.
     """
 
     def __init__(self, output_dir, interval=4):
         # Initialize the thread
-        Thread.__init__(self)
+        Process.__init__(self)
 
         # Provide a way to stop the recorder
         self._stop = Event()
+        self._stopped = Event()
 
         # Set config options
         self.output_dir = output_dir
@@ -27,14 +28,17 @@ class Recorder(Thread):
     def join(self, timeout=None):
         """ Stop recording """
         self._stop.set()
+        self._stopped.wait()
         print("Recorder stopped. Total recording time: " + self.get_recording_time() + ".")
-        Thread.join(self)
+        Process.join(self, timeout=timeout)
 
     def run(self):
         """ Periodically take a screenshots of the screen """
-        while not self._stop.isSet():
+        while not self._stop.is_set():
             self.screenshot()
             self._stop.wait(self.interval)
+
+        self._stopped.set()
 
     def get_recording_time(self):
         return str(self.screenshot_counter * self.interval) + " seconds"

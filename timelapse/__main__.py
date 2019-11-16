@@ -40,6 +40,7 @@ class Timelapse(NSObject):
 
         # Initialize recording
         self.recording = start_recording
+        self.recorder = None
 
         # Set correct output paths
         self.recorder_output_basedir = os.path.join(
@@ -96,7 +97,7 @@ class Timelapse(NSObject):
 
     def startStopRecording_(self, notification):
         if self.recording:
-            self.recorder.join()
+            self.recorder.join(timeout=screenshot_interval*2)
             # Create timelapse after recording?
             if encode:
                 self.encoder = Encoder(
