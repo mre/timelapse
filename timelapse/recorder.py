@@ -2,7 +2,16 @@ import os
 import subprocess  # Taking screenshot
 import datetime  # Filename
 from multiprocessing import Process, Event
+from PyObjCTools import AppHelper
+from AppKit import NSEvent, NSScreen, NSMouseInRect
 
+def get_screen_with_mouse_index():
+    mouseLocation = NSEvent.mouseLocation()
+    screens = NSScreen.screens()
+    for i, screen in enumerate(screens):
+        if NSMouseInRect(mouseLocation, screen.frame(), False):
+            return i
+    return 0
 
 class Recorder(Process):
     """
@@ -58,6 +67,6 @@ class Recorder(Process):
         filename = self.get_filename()
         print("Taking screenshot [" + filename + "]")
         subprocess.run(
-            ['screencapture', '-S', '-o', '-x', '-t', self.format, filename],
+            ['screencapture', '-S', '-o', '-x', '-D', str(get_screen_with_mouse_index() + 1), '-t', self.format, filename],
             check=True)
         self.screenshot_counter += 1
