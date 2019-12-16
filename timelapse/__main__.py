@@ -5,8 +5,15 @@ import subprocess
 from PyObjCTools import AppHelper
 from AppKit import *
 
+from notify import notify  # Shows notifications/alerts
 from encoder import Encoder, not_found_msg  # Creates timelapse video
 from recorder import Recorder  # Takes screenshots
+from Foundation import NSUserDefaults
+
+
+def dark_mode():
+    return NSUserDefaults.standardUserDefaults().stringForKey_('AppleInterfaceStyle') == "Dark"
+
 
 # Configuration
 start_recording = False  # Start recording on launch
@@ -16,7 +23,12 @@ dir_base = os.path.expanduser("~")  # Base directory
 dir_app = "timelapse"  # Output directory
 dir_pictures = "Pictures"  # Place for pictures in filesystem
 dir_movies = "Movies"  # Place for movies in filesystem
-dir_resources = "resources"
+dir_resources = "./resources/"
+if dark_mode():
+    dir_resources += "white"
+else:
+    dir_resources += "black"
+
 subdir_suffix = "Session-" + time.strftime("%Y%m%d")  # Name of subdirectory
 image_recording = "record.gif"  # App icon recording
 image_idle = "stop.gif"  # App icon idle
@@ -67,9 +79,9 @@ class Timelapse(NSObject):
 
     def loadIcons(self):
         self.icon_recording = NSImage.alloc().initWithContentsOfFile_(
-            os.path.join("timelapse", dir_resources, image_recording))
+            os.path.join(dir_resources, image_recording))
         self.icon_idle = NSImage.alloc().initWithContentsOfFile_(
-            os.path.join("timelapse", dir_resources, image_idle))
+            os.path.join(dir_resources, image_idle))
 
     def setStatus(self):
         """ Sets the image and menu text according to recording status """
@@ -104,6 +116,7 @@ class Timelapse(NSObject):
                     self.image_dir, self.encoder_output_basedir)
                 self.encoder.start()
         else:
+            notify("Timelapse started", "The recording has started")
             self.recorder = Recorder(self.image_dir, screenshot_interval)
             self.recorder.start()
         self.recording = not self.recording
@@ -122,10 +135,11 @@ class Timelapse(NSObject):
         try:
             print(f"Output directory: {output_dir}")
             os.makedirs(output_dir)
-            print("Ready for recording! Start recording from the menubar icon.")
+            notify("Timelapse is ready!",
+                   "Start recording from the menubar icon.")
 
         except OSError as e:
-            print("Error while creating directory:", e)
+            notify("Timelapse error", f"Error while creating directory: {e}")
             exit()
         return output_dir
 
@@ -145,7 +159,8 @@ class Timelapse(NSObject):
 
     def check_dependencies(self):
         try:
-            subprocess.run(['ffmpeg'], check=True, capture_output=True, timeout=10.0)
+            subprocess.run(['ffmpeg'], check=True,
+                           capture_output=True, timeout=10.0)
         except subprocess.CalledProcessError:
             print("ffmpeg command was found")
             pass  # ffmpeg is found, but returns non-zero exit as expected

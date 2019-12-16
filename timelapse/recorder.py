@@ -5,6 +5,7 @@ from multiprocessing import Process, Event
 from PyObjCTools import AppHelper
 from AppKit import NSEvent, NSScreen, NSMouseInRect
 
+
 def get_screen_with_mouse_index():
     mouseLocation = NSEvent.mouseLocation()
     screens = NSScreen.screens()
@@ -12,6 +13,7 @@ def get_screen_with_mouse_index():
         if NSMouseInRect(mouseLocation, screen.frame(), False):
             return i
     return 0
+
 
 class Recorder(Process):
     """
@@ -39,7 +41,8 @@ class Recorder(Process):
         """ Stop recording """
         self._stop.set()
         self._stopped.wait()
-        print("Recorder stopped. Total recording time: " + self.get_recording_time() + ".")
+        print("Recorder stopped. Total recording time: " +
+              self.get_recording_time() + ".")
         Process.join(self, timeout=timeout)
 
     def run(self):
@@ -55,18 +58,15 @@ class Recorder(Process):
 
     def get_filename(self):
         """ Call screencapture for mac screenshot """
-        # The id is the unique part of the filename.
-        id = str(datetime.datetime.now())
-        # Format the id a bit (remove whitspace and special characters)
-        id = id.replace(' ', '').replace(':', '').replace('.', '')
-        filename = os.path.join(self.output_dir, id) + "." + self.format
+        filename = os.path.join(
+            self.output_dir, f"{self.screenshot_counter}.{self.format}")
         return filename
 
     def screenshot(self):
         """ This method uses Mac OSX screencapture from the commandline """
         filename = self.get_filename()
-        print("Taking screenshot [" + filename + "]")
         subprocess.run(
-            ['screencapture', '-S', '-o', '-x', '-D', str(get_screen_with_mouse_index() + 1), '-t', self.format, filename],
+            ['screencapture', '-S', '-o', '-x', '-D',
+                str(get_screen_with_mouse_index() + 1), '-t', self.format, filename],
             check=True)
         self.screenshot_counter += 1

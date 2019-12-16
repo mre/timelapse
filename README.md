@@ -1,8 +1,11 @@
 # Timelapse
 
-[![Build Status](https://travis-ci.org/mre/timelapse.svg?branch=master)](https://travis-ci.org/mre/timelapse)
+![timelapse logo](timelapse/resources/icon.svg)
 
 ...takes screenshots and creates a video out of them to make a timelapse.
+
+[![Build Status](https://travis-ci.org/mre/timelapse.svg?branch=master)](https://travis-ci.org/mre/timelapse)
+
 
 ## Goals
 
@@ -35,7 +38,7 @@ First, install the project's dependencies:
 pip install -r requirements.txt
 ```
 
-Now run the main application from the commmand-line:
+Now run the main application from the commandline:
 
 ```shell
 python timelapse
@@ -57,3 +60,5 @@ Licensed under either of
 * MIT license (LICENSE-MIT or http://opensource.org/licenses/MIT)
 
 at your option.
+
+App icon by [gstudioimagen - www.freepik.com](https://www.freepik.com/free-photos-vectors/people).

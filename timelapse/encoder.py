@@ -1,6 +1,11 @@
 from threading import Thread  # Encoder is a thread
 import subprocess
-import time, os, fnmatch, shutil
+from datetime import datetime
+import os
+import glob
+import fnmatch
+import shutil
+from notify import notify  # Shows notifications/alerts
 
 not_found_msg = """
 The ffmpeg command was not found;
@@ -18,10 +23,9 @@ class Encoder(Thread):
         Thread.__init__(self)
 
         # Set config options
-        self.input = "{}/*.png".format(input_dir)
-        t = time.localtime()
-        timestamp = time.strftime('%b-%d-%Y_%H:%M', t)
-        self.output = "{}/output-{}.mp4".format(output_dir, timestamp)
+        self.input = f"{input_dir}/%d.png"
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        self.output = f"{output_dir}/timelapse-{timestamp}.mov"
 
         print("Encoder started")
 
@@ -31,16 +35,26 @@ class Encoder(Thread):
 
     def run(self):
         """
-        Now that we have graphed images of the dataset, we will stitch them
-        together using ffmpeg to create a movie.  Each image will become
+        Now that we have screenshots of the user's desktop, we will stitch them
+        together using `ffmpeg` to create a movie.  Each image will become
         a single frame in the movie.
         """
-        command = (
-            "ffmpeg", "-framerate", "30", "-pattern_type", "glob",
-            "-loglevel", "quiet", "-stats",
-            "-i", self.input, self.output
-        )
-
-        print("\n\nabout to execute:\n%s\n\n" % ' '.join(command))
-        subprocess.run(command, check=True)
-        print("\n\n The movie was saved to `{}`".format(self.output))
+        # Call ffmpeg with settings compatible with QuickTime.
+        # https://superuser.com/a/820137
+        command = ["/usr/local/bin/ffmpeg", "-y",
+                   "-framerate", "30",
+                   "-i", self.input,
+                   "-vf", "format=yuv420p",
+                   '-vcodec', 'h264',
+                   self.output]
+        try:
+            notify("Timelapse", f"Creating timelapse. This might take a while")
+            print(' '.join(command))
+            ffmpeg = subprocess.Popen(command)
+            out, err = ffmpeg.communicate()
+            if err:
+                notify("Timelapse Error: ffmpeg", err)
+            else:
+                notify("Timelapse", f"Movie saved to `{self.output}`")
+        except Exception as e:
+            notify("Timelapse Error", e)

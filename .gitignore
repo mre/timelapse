@@ -2,3 +2,6 @@
 .idea
 venv
 .python-version
+dist
+.eggs
+build
