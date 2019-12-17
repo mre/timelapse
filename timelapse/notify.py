@@ -1,7 +1,6 @@
-import os
+from subprocess import run
 
 
 def notify(title, text):
-    os.system("""
-              osascript -e 'display notification "{}" with title "{}"'
-              """.format(text, title))
+    script = 'display notification "{}" with title "{}"'.format(text, title)
+    return run(['osascript', '-e', script])
