@@ -34,7 +34,8 @@ understand.
 
 1. Download the app from the [releases
    page](https://github.com/mre/timelapse/releases).
-2. Start the app.
+2. Start the app. If you get a warning about the app being unsigned, 
+   go to the `System Preferences > Security & Privacy` and allow the app from there.
 3. A new icon appears in the menubar.
 4. By clicking on it, you start and stop the screen recording.
 5. Once you've finished recording, `timelapse` will create a video for you  
