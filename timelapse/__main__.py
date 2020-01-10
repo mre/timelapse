@@ -11,7 +11,7 @@ from recorder import Recorder  # Takes screenshots
 from Foundation import NSUserDefaults
 
 
-def dark_mode() -> Any:
+def dark_mode() -> bool:
     return NSUserDefaults.standardUserDefaults().stringForKey_('AppleInterfaceStyle') == "Dark"
 
 
