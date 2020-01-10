@@ -144,7 +144,7 @@ class Timelapse(NSObject):
         return output_dir
 
     @objc.python_method
-    def get_sub_dir(self, base_dir) -> str:
+    def get_sub_dir(self, base_dir: str) -> str:
         """ Returns the next nonexistend subdirectory to base_dir """
         subdir_base: str = os.path.join(base_dir, subdir_suffix)
         # Check if we can use subdir without any session id
