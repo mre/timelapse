@@ -68,5 +68,5 @@ class Recorder(Process):
         subprocess.run(
             ['screencapture', '-S', '-o', '-x', '-D',
                 str(get_screen_with_mouse_index() + 1), '-t', self.format, filename],
-            check: bool =True)
+            check=True)
         self.screenshot_counter: int += 1
