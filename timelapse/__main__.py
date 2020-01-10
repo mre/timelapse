@@ -11,35 +11,35 @@ from recorder import Recorder  # Takes screenshots
 from Foundation import NSUserDefaults
 
 
-def dark_mode():
+def dark_mode() -> Any:
     return NSUserDefaults.standardUserDefaults().stringForKey_('AppleInterfaceStyle') == "Dark"
 
 
 # Configuration
-start_recording = False  # Start recording on launch
-encode = True  # Create video after recording
-screenshot_interval = 1.5  # Number of seconds between screenshots
-dir_base = os.path.expanduser("~")  # Base directory
-dir_app = "timelapse"  # Output directory
-dir_pictures = "Pictures"  # Place for pictures in filesystem
-dir_movies = "Movies"  # Place for movies in filesystem
-dir_resources = "./resources/"
+start_recording: bool = False  # Start recording on launch
+encode: bool = True  # Create video after recording
+screenshot_interval: float = 1.5  # Number of seconds between screenshots
+dir_base: str = os.path.expanduser("~")  # Base directory
+dir_app: str = "timelapse"  # Output directory
+dir_pictures: str = "Pictures"  # Place for pictures in filesystem
+dir_movies: str = "Movies"  # Place for movies in filesystem
+dir_resources: str = "./resources/"
 if dark_mode():
-    dir_resources += "white"
+    dir_resources: str += "white"
 else:
-    dir_resources += "black"
+    dir_resources: str += "black"
 
-subdir_suffix = "Session-" + time.strftime("%Y%m%d")  # Name of subdirectory
-image_recording = "record.gif"  # App icon recording
-image_idle = "stop.gif"  # App icon idle
-create_session_subdir = True  # New screenshot directory for each session
-create_movies = True  # Create movies from screenshots after recording
+subdir_suffix: str = "Session-" + time.strftime("%Y%m%d")  # Name of subdirectory
+image_recording: str = "record.gif"  # App icon recording
+image_idle: str = "stop.gif"  # App icon idle
+create_session_subdir: str = True  # New screenshot directory for each session
+create_movies: bool = True  # Create movies from screenshots after recording
 # Menu item text when recorder is running
-text_recorder_running = "Stop recording"
-text_recorder_idle = "Start recording"  # Menu item text when recorder is idle
+text_recorder_running: str = "Stop recording"
+text_recorder_idle: str = "Start recording"  # Menu item text when recorder is idle
 # Tooltip of menu icon when not recording
-tooltip_idle = "Timelapse screen recorder"
-tooltip_running = "Recording | " + tooltip_idle  # Tooltip when recording
+tooltip_idle: str = "Timelapse screen recorder"
+tooltip_running: str = "Recording | " + tooltip_idle  # Tooltip when recording
 
 
 ###############
@@ -47,19 +47,19 @@ tooltip_running = "Recording | " + tooltip_idle  # Tooltip when recording
 class Timelapse(NSObject):
     """ Creates a timelapse video """
 
-    def applicationDidFinishLaunching_(self, notification):
+    def applicationDidFinishLaunching_(self, notification) -> None:
         self.check_dependencies()
 
         # Initialize recording
-        self.recording = start_recording
+        self.recording: bool = start_recording
         self.recorder = None
 
         # Set correct output paths
-        self.recorder_output_basedir = os.path.join(
+        self.recorder_output_basedir: str = os.path.join(
             dir_base, dir_pictures, dir_app)
-        self.encoder_output_basedir = os.path.join(dir_base, dir_movies)
+        self.encoder_output_basedir: str = os.path.join(dir_base, dir_movies)
 
-        self.image_dir = self.create_dir(self.recorder_output_basedir)
+        self.image_dir: str = self.create_dir(self.recorder_output_basedir)
 
         # Create a reference to the statusbar (menubar)
         self.statusbar = NSStatusBar.systemStatusBar()
@@ -77,13 +77,13 @@ class Timelapse(NSObject):
         self.loadIcons()
         self.setStatus()
 
-    def loadIcons(self):
+    def loadIcons(self) -> None:
         self.icon_recording = NSImage.alloc().initWithContentsOfFile_(
             os.path.join(dir_resources, image_recording))
         self.icon_idle = NSImage.alloc().initWithContentsOfFile_(
             os.path.join(dir_resources, image_idle))
 
-    def setStatus(self):
+    def setStatus(self) -> None:
         """ Sets the image and menu text according to recording status """
         if self.recording:
             self.statusitem.setImage_(self.icon_recording)
@@ -94,7 +94,7 @@ class Timelapse(NSObject):
             self.recordButton.setTitle_(text_recorder_idle)
             self.statusitem.setToolTip_(tooltip_idle)
 
-    def createMenu(self):
+    def createMenu(self) -> menu:
         """ Status bar menu """
         menu = NSMenu.alloc().init()
         # Bind record event
@@ -107,7 +107,7 @@ class Timelapse(NSObject):
         menu.addItem_(menuitem)
         return menu
 
-    def startStopRecording_(self, notification):
+    def startStopRecording_(self, notification) -> None:
         if self.recording:
             self.recorder.join(timeout=screenshot_interval*2)
             # Create timelapse after recording?
@@ -119,18 +119,18 @@ class Timelapse(NSObject):
             notify("Timelapse started", "The recording has started")
             self.recorder = Recorder(self.image_dir, screenshot_interval)
             self.recorder.start()
-        self.recording = not self.recording
+        self.recording: bool = not self.recording
         self.setStatus()
 
     @objc.python_method
-    def create_dir(self, base_dir):
+    def create_dir(self, base_dir: str) -> str:
         """ Creates a specified directory and the path to it if necessary """
         if create_session_subdir:
             # Create a new subdirectory
-            output_dir = os.path.join(base_dir, self.get_sub_dir(base_dir))
+            output_dir: str = os.path.join(base_dir, self.get_sub_dir(base_dir))
         else:
             # Don't create a subdirectory. Use base directory for output
-            output_dir = base_dir
+            output_dir: str = base_dir
         # Create path if it doesn't exist
         try:
             print(f"Output directory: {output_dir}")
@@ -144,20 +144,20 @@ class Timelapse(NSObject):
         return output_dir
 
     @objc.python_method
-    def get_sub_dir(self, base_dir):
+    def get_sub_dir(self, base_dir) -> str:
         """ Returns the next nonexistend subdirectory to base_dir """
-        subdir_base = os.path.join(base_dir, subdir_suffix)
+        subdir_base: str = os.path.join(base_dir, subdir_suffix)
         # Check if we can use subdir without any session id
-        subdir = subdir_base
+        subdir: str = subdir_base
         # Use a session id only if subdir already exists
-        session_number = 0
+        session_number: int = 0
         while os.path.exists(subdir):
             # We can't use subdir. Create directory with session id
-            session_number += 1
-            subdir = subdir_base + "-" + str(session_number)
+            session_number: int += 1
+            subdir: str = subdir_base + "-" + str(session_number)
         return subdir
 
-    def check_dependencies(self):
+    def check_dependencies(self) -> None:
         try:
             subprocess.run(['ffmpeg'], check=True,
                            capture_output=True, timeout=10.0)

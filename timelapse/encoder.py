@@ -18,22 +18,22 @@ On macOS, try running `brew install ffmpeg`.
 class Encoder(Thread):
     """Create a video file from images"""
 
-    def __init__(self, input_dir, output_dir):
+    def __init__(self, input_dir: str, output_dir: str) -> None:
         # Initialize the thread
         Thread.__init__(self)
 
         # Set config options
-        self.input = f"{input_dir}/%d.png"
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-        self.output = f"{output_dir}/timelapse-{timestamp}.mov"
+        self.input: str = f"{input_dir}/%d.png"
+        timestamp: str = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        self.output: str = f"{output_dir}/timelapse-{timestamp}.mov"
 
         print("Encoder started")
 
-    def join(self, timeout=None):
+    def join(self, timeout=None) -> None:
         """ Hard shutdown """
         Thread.join(self)
 
-    def run(self):
+    def run(self) -> None:
         """
         Now that we have screenshots of the user's desktop, we will stitch them
         together using `ffmpeg` to create a movie.  Each image will become
@@ -41,7 +41,7 @@ class Encoder(Thread):
         """
         # Call ffmpeg with settings compatible with QuickTime.
         # https://superuser.com/a/820137
-        command = ["/usr/local/bin/ffmpeg", "-y",
+        command: List[int] = ["/usr/local/bin/ffmpeg", "-y",
                    "-framerate", "30",
                    "-i", self.input,
                    "-vf", "format=yuv420p",
