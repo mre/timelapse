@@ -69,4 +69,4 @@ class Recorder(Process):
             ['screencapture', '-S', '-o', '-x', '-D',
                 str(get_screen_with_mouse_index() + 1), '-t', self.format, filename],
             check=True)
-        self.screenshot_counter: int += 1
+        self.screenshot_counter += 1
