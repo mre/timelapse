@@ -25,9 +25,9 @@ dir_pictures: str = "Pictures"  # Place for pictures in filesystem
 dir_movies: str = "Movies"  # Place for movies in filesystem
 dir_resources: str = "./resources/"
 if dark_mode():
-    dir_resources: str += "white"
+    dir_resources += "white"
 else:
-    dir_resources: str += "black"
+    dir_resources += "black"
 
 subdir_suffix: str = "Session-" + time.strftime("%Y%m%d")  # Name of subdirectory
 image_recording: str = "record.gif"  # App icon recording
@@ -153,7 +153,7 @@ class Timelapse(NSObject):
         session_number: int = 0
         while os.path.exists(subdir):
             # We can't use subdir. Create directory with session id
-            session_number: int += 1
+            session_number += 1
             subdir: str = subdir_base + "-" + str(session_number)
         return subdir
 
