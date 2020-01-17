@@ -7,11 +7,12 @@ timelapse.
 
 [![Build Status](https://travis-ci.org/mre/timelapse.svg?branch=master)](https://travis-ci.org/mre/timelapse)
 
-## Goals
+## Features
 
 - Simple
 - Minimal CPU usage
 - Extensible
+- Follows the cursor across screens while recording
 
 ## Why use this project?
 
