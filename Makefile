@@ -23,5 +23,5 @@ test: clean
 
 .PHONY: app 
 app:
-	python setup.py py2app
+	python setup.py py2app --emulate-shell-environment
 

@@ -42,7 +42,7 @@ class Encoder(Thread):
         """
         # Call ffmpeg with settings compatible with QuickTime.
         # https://superuser.com/a/820137
-        command: List[str] = ["/usr/local/bin/ffmpeg", "-y",
+        command: List[str] = ["ffmpeg", "-y",
                               "-framerate", "30",
                               "-i", self.input,
                               "-vf", "format=yuv420p",
