@@ -42,20 +42,22 @@ class Encoder(Thread):
         """
         # Call ffmpeg with settings compatible with QuickTime.
         # https://superuser.com/a/820137
-        command: List[str]= ["/usr/local/bin/ffmpeg", "-y",
-                   "-framerate", "30",
-                   "-i", self.input,
-                   "-vf", "format=yuv420p",
-                   '-vcodec', 'h264',
-                   self.output]
+        command: List[str] = ["/usr/local/bin/ffmpeg", "-y",
+                              "-framerate", "30",
+                              "-i", self.input,
+                              "-vf", "format=yuv420p",
+                              "-vcodec", "h264",
+                              self.output]
         try:
             notify("Timelapse", f"Creating timelapse. This might take a while")
             print(' '.join(command))
-            ffmpeg = subprocess.Popen(command)
-            out, err = ffmpeg.communicate()
-            if err:
-                notify("Timelapse Error: ffmpeg", err)
+            try:
+                completed = subprocess.run(
+                    command, capture_output=True, check=True)
+            except subprocess.CalledProcessError as e:
+                notify("Timelapse Error:", e.stderr.decode('utf-8'))
             else:
                 notify("Timelapse", f"Movie saved to `{self.output}`")
         except Exception as e:
+            print("Main exception", e)
             notify("Timelapse Error", e)
