@@ -1,5 +1,3 @@
-# Timelapse
-
 ![timelapse logo](timelapse/resources/logo.svg)
 
 ...a little macOS app that records your screen to make a timelapse.
