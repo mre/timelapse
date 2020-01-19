@@ -1,6 +1,7 @@
 import os
 import time
 import subprocess
+from pathlib import Path
 
 from PyObjCTools import AppHelper
 from AppKit import *
@@ -19,7 +20,7 @@ def dark_mode() -> bool:
 start_recording: bool = False  # Start recording on launch
 encode: bool = True  # Create video after recording
 screenshot_interval: float = 1.5  # Number of seconds between screenshots
-dir_base: str = os.path.expanduser("~")  # Base directory
+dir_base = str(Path.home())  # Base directory
 dir_app: str = "timelapse"  # Output directory
 dir_pictures: str = "Pictures"  # Place for pictures in filesystem
 dir_movies: str = "Movies"  # Place for movies in filesystem
@@ -94,7 +95,7 @@ class Timelapse(NSObject):
             self.recordButton.setTitle_(text_recorder_idle)
             self.statusitem.setToolTip_(tooltip_idle)
 
-    def createMenu(self) -> menu:
+    def createMenu(self) -> NSMenu:
         """ Status bar menu """
         menu = NSMenu.alloc().init()
         # Bind record event
