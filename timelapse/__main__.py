@@ -30,8 +30,8 @@ if dark_mode():
 else:
     dir_resources += "black"
 
-image_recording: str = "record.gif"  # App icon recording
-image_idle: str = "stop.gif"  # App icon idle
+image_recording: str = "recording.png"  # App icon recording
+image_idle: str = "idle.png"  # App icon idle
 create_movies: bool = True  # Create movies from screenshots after recording
 # Menu item text when recorder is running
 text_recorder_running: str = "Stop recording"
