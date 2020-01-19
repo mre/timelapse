@@ -24,7 +24,7 @@ these categories:
 - Freeware
 
 This project provides an _Open-Source_ alternative that is both, easy to use and
-understand.
+understand. If you did something cool with the app, let us know. :)
 
 ## Requirements
 
