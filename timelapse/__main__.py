@@ -30,14 +30,13 @@ if dark_mode():
 else:
     dir_resources += "black"
 
-subdir_suffix: str = "Session-" + time.strftime("%Y%m%d")  # Name of subdirectory
 image_recording: str = "record.gif"  # App icon recording
 image_idle: str = "stop.gif"  # App icon idle
-create_session_subdir: str = True  # New screenshot directory for each session
 create_movies: bool = True  # Create movies from screenshots after recording
 # Menu item text when recorder is running
 text_recorder_running: str = "Stop recording"
-text_recorder_idle: str = "Start recording"  # Menu item text when recorder is idle
+# Menu item text when recorder is idle
+text_recorder_idle: str = "Start recording"
 # Tooltip of menu icon when not recording
 tooltip_idle: str = "Timelapse screen recorder"
 tooltip_running: str = "Recording | " + tooltip_idle  # Tooltip when recording
@@ -59,8 +58,6 @@ class Timelapse(NSObject):
         self.recorder_output_basedir: str = os.path.join(
             dir_base, dir_pictures, dir_app)
         self.encoder_output_basedir: str = os.path.join(dir_base, dir_movies)
-
-        self.image_dir: str = self.create_dir(self.recorder_output_basedir)
 
         # Create a reference to the statusbar (menubar)
         self.statusbar = NSStatusBar.systemStatusBar()
@@ -117,28 +114,23 @@ class Timelapse(NSObject):
                     self.image_dir, self.encoder_output_basedir)
                 self.encoder.start()
         else:
-            notify("Timelapse started", "The recording has started")
+            self.image_dir: str = self.create_dir(self.recorder_output_basedir)
             self.recorder = Recorder(self.image_dir, screenshot_interval)
             self.recorder.start()
+            notify("Timelapse started", "The recording has started")
         self.recording: bool = not self.recording
         self.setStatus()
 
     @objc.python_method
     def create_dir(self, base_dir: str) -> str:
         """ Creates a specified directory and the path to it if necessary """
-        if create_session_subdir:
-            # Create a new subdirectory
-            output_dir: str = os.path.join(base_dir, self.get_sub_dir(base_dir))
-        else:
-            # Don't create a subdirectory. Use base directory for output
-            output_dir: str = base_dir
+        # Create a new subdirectory
+        output_dir: str = os.path.join(base_dir, self.get_sub_dir(base_dir))
+
         # Create path if it doesn't exist
         try:
             print(f"Output directory: {output_dir}")
             os.makedirs(output_dir)
-            notify("Timelapse is ready!",
-                   "Start recording from the menubar icon.")
-
         except OSError as e:
             notify("Timelapse error", f"Error while creating directory: {e}")
             exit()
@@ -146,17 +138,10 @@ class Timelapse(NSObject):
 
     @objc.python_method
     def get_sub_dir(self, base_dir: str) -> str:
-        """ Returns the next nonexistend subdirectory to base_dir """
-        subdir_base: str = os.path.join(base_dir, subdir_suffix)
-        # Check if we can use subdir without any session id
-        subdir: str = subdir_base
-        # Use a session id only if subdir already exists
-        session_number: int = 0
-        while os.path.exists(subdir):
-            # We can't use subdir. Create directory with session id
-            session_number += 1
-            subdir: str = subdir_base + "-" + str(session_number)
-        return subdir
+        """ Returns the subdirectory for recording, relative to base_dir """
+        subdir_suffix: str = "Session-" + \
+            time.strftime("%Y-%m-%d_%H-%M-%S")
+        return os.path.join(base_dir, subdir_suffix)
 
     def check_dependencies(self) -> None:
         try:
