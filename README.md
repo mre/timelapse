@@ -1,9 +1,8 @@
 # Timelapse
 
-![timelapse logo](timelapse/resources/icon.svg)
+![timelapse logo](timelapse/resources/logo.svg)
 
-...a macOS app that takes screenshots and creates a video out of them to make a
-timelapse.
+...a little macOS app that records your screen to make a timelapse.
 
 [![Build Status](https://travis-ci.org/mre/timelapse.svg?branch=master)](https://travis-ci.org/mre/timelapse)
 
@@ -35,7 +34,7 @@ understand. If you did something cool with the app, let us know. :)
 
 1. Download the app from the [releases
    page](https://github.com/mre/timelapse/releases).
-2. Start the app. If you get a warning about the app being unsigned, 
+2. Start the app. If you get a warning about the app being unsigned,
    go to the `System Preferences > Security & Privacy` and allow the app from there.
 3. A new icon appears in the menubar.
 4. By clicking on it, you start and stop the screen recording.
