@@ -44,6 +44,8 @@ understand.
 
 ## Development
 
+You need Python 3.5+ for development.
+
 First, install the project's dependencies:
 
 ```shell
