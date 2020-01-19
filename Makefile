@@ -28,6 +28,10 @@ run: clean ## Run application in shell
 test: clean ## Run pytest
 	pytest
 
+.PHONY: open
+open: ## Open project folder in Finder
+	open .
+
 .PHONY: app 
 app: ## Build app from source code
 	python setup.py py2app --emulate-shell-environment
