@@ -7,49 +7,32 @@
 ## Features
 
 - Simple
-- Minimal CPU usage
-- Extensible
+- Open Source
+- Low memory and CPU usage
 - Follows the cursor across screens while recording
 
-## Why use this project?
+## Getting started
 
-There are many alternative solutions available. Most of them fall into one of
-these categories:
-
-- Commercial applications
-- Custom scripts based on Automator and AppleScript
-- Freeware
-
-This project provides an _Open-Source_ alternative that is both, easy to use and
-understand. If you did something cool with the app, let us know. :)
-
-## Requirements
-
-- macOS (any version)
-- ffmpeg (run `brew install ffmpeg`)
-
-## Usage
-
-1. Download the app from the [releases
+1. Download the latest zip file from the [releases
    page](https://github.com/mre/timelapse/releases).
-2. Start the app. If you get a warning about the app being unsigned,
-   go to the `System Preferences > Security & Privacy` and allow the app from there.
-3. A new icon appears in the menubar.
-4. By clicking on it, you start and stop the screen recording.
-5. Once you've finished recording, `timelapse` will create a video for you  
-   and print the output path to the commandline.
+2. Unzip and start the app. If you get a warning about the app being unsigned,
+   go to the `System Preferences > Security & Privacy` and allow the app from
+   there.
+3. A new icon appears in your menubar; start and stop the screen recording from
+   there.
+4. Once you've stopped recording, `timelapse` will create a video for you in
+   your `Movies` folder.
 
 ## Development
 
-You need Python 3.5+ for development.
-
-First, install the project's dependencies:
+If you like to help improve this app, make sure you have at least Python 3.6
+installed. First, install the project's dependencies:
 
 ```shell
 make install
 ```
 
-Now run the main application from the commandline:
+Now make changes and run the main application from the commandline:
 
 ```shell
 make run
@@ -65,4 +48,5 @@ Licensed under either of
 
 at your option.
 
-App icon by [gstudioimagen - www.freepik.com](https://www.freepik.com/free-photos-vectors/people).
+App icon by [gstudioimagen -
+www.freepik.com](https://www.freepik.com/free-photos-vectors/people).
