@@ -32,12 +32,15 @@ jobs:
       run: poetry run pytest
 
     - name: Build app
-      run: |
-        poetry run python setup.py py2app --emulate-shell-environment
+      run: poetry run python setup.py py2app --emulate-shell-environment
+
+    - name: Compress app
+      run: zip -r timelapse.zip dist/Timelapse.app
 
     - name: Release
-      uses: thedoctor0/zip-release@master
+      uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
-        filename: 'timelapse.zip'
-        path: dist/
+        files: timelapse.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
