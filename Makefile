@@ -14,19 +14,15 @@ clean: ## Clean up project assets
 
 .PHONY: install
 install: ## Install app dependencies
-	pip install -r requirements.txt
-
-.PHONY: install-dev
-install-dev: ## Install dev dependencies
-	pip install -r requirements-dev.txt
+	poetry install
 
 .PHONY: run
 run: clean ## Run application in shell
-	python timelapse
+	poetry run timelapse
 
 .PHONY: test
 test: clean ## Run pytest
-	pytest
+	poetry run pytest
 
 .PHONY: open
 open: ## Open project folder in Finder
@@ -34,8 +30,8 @@ open: ## Open project folder in Finder
 
 .PHONY: app 
 app: ## Build app from source code
-	python setup.py py2app --emulate-shell-environment
+	poetry run python setup.py py2app --emulate-shell-environment
 
 .PHONY: test-app 
 test-app: ## Quickly build test app for debugging
-	python setup.py py2app -A --emulate-shell-environment
+	poetry run python setup.py py2app -A --emulate-shell-environment

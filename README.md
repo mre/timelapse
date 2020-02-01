@@ -2,7 +2,7 @@
 
 ...a little macOS app that records your screen to make a timelapse.
 
-[![Build Status](https://travis-ci.org/mre/timelapse.svg?branch=master)](https://travis-ci.org/mre/timelapse)
+![CI](https://github.com/mre/timelapse/workflows/CI/badge.svg)
 
 ## Features
 
@@ -46,13 +46,13 @@ You need Python 3.5+ for development.
 First, install the project's dependencies:
 
 ```shell
-pip install -r requirements.txt
+make install
 ```
 
 Now run the main application from the commandline:
 
 ```shell
-python timelapse
+make run
 ```
 
 ## License
