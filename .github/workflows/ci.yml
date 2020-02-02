@@ -35,7 +35,10 @@ jobs:
       run: poetry run python setup.py py2app --emulate-shell-environment
 
     - name: Compress app
-      run: zip -r timelapse.zip dist/Timelapse.app
+      shell: bash
+      run: |
+        ( cd dist; zip -r timelapse.zip Timelapse.app )
+        mv dist/timelapse.zip ./
 
     - name: Release
       uses: softprops/action-gh-release@v1
