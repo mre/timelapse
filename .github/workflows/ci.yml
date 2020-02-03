@@ -35,9 +35,9 @@ jobs:
       run: poetry run python setup.py py2app --emulate-shell-environment
 
     - name: Compress app
-      shell: bash
       run: |
-        ( cd dist; zip -r timelapse.zip Timelapse.app )
+        cd dist
+        zip -r timelapse.zip Timelapse.app
         mv dist/timelapse.zip ./
 
     - name: Release
