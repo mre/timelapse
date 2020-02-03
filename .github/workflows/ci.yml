@@ -38,6 +38,7 @@ jobs:
       run: |
         cd dist
         zip -r timelapse.zip Timelapse.app
+        cd ../
         mv dist/timelapse.zip ./
 
     - name: Release
