@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "timelapse"
-version = "0.995"
+version = "1.0"
 description = "Record a timelapse video of your desktop. Native macOS screen recording app."
 authors = ["Matthias Endler <matthias-endler@gmx.net>"]
 license = "Apache-2.0"
