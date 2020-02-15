@@ -20,6 +20,7 @@
    there.
 3. A new icon appears in your menubar; start and stop the screen recording from
    there.
+   ![A demonstration of starting and stopping a recording from the menubar](timelapse.gif)
 4. Once you've stopped recording, `timelapse` will create a video for you in
    your `Movies` folder.
 
