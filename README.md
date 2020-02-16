@@ -3,6 +3,7 @@
 ...a little macOS app that records your screen to make a timelapse.
 
 ![CI](https://github.com/mre/timelapse/workflows/CI/badge.svg)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/mre/timelapse)
 
 ## Features
 
