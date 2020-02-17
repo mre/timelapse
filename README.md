@@ -14,16 +14,15 @@
 
 ## Getting started
 
-1. Download the latest zip file from the [releases
-   page](https://github.com/mre/timelapse/releases).
-2. Unzip and start the app. If you get a warning about the app being unsigned,
-   go to the `System Preferences > Security & Privacy` and allow the app from
-   there.
-3. A new icon appears in your menubar; start and stop the screen recording from
+1. Make sure that you have `ffmpeg` installed (e.g. run `brew install ffmpeg`).
+2. [Download timelapse](https://github.com/mre/timelapse/releases/latest/download/timelapse.zip)
+3. Unzip and start the app. If you get a warning about the app being unsigned,
+   go to `System Preferences > Security & Privacy` and allow the app to run.
+4. A new icon appears in your menubar; start and stop the screen recording from
    there.
    ![A demonstration of starting and stopping a recording from the menubar](timelapse.gif)
-4. Once you've stopped recording, `timelapse` will create a video for you in
-   your `Movies` folder.
+
+timelapse will create a video for you in your `Movies` folder.
 
 ## Development
 
