@@ -56,7 +56,7 @@ class Encoder(Thread):
                     command, capture_output=True, check=True)
             except subprocess.CalledProcessError as e:
                 notify("Timelapse Error:", e.stderr.decode('utf-8'))
-                notify("ffmpeg could not be found.", not_found_msg)
+                notify("Timelapse: ffmpeg not found.", e.stderr.decode('utf-8'))
             else:
                 notify("Timelapse", f"Movie saved to `{self.output}`")
         except Exception as e:
