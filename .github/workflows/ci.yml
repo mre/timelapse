@@ -32,6 +32,9 @@ jobs:
     - name: Test with pytest
       run: poetry run pytest
 
+    - name: Python Code Quality and Lint
+      uses: ricardochaves/python-lint@v1.1.0
+
     - name: Build app
       run: poetry run python setup.py py2app --emulate-shell-environment
 
