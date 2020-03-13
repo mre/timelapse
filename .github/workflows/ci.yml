@@ -10,6 +10,15 @@ on:
     - cron: "20 23 * * 4"
 
 jobs:
+  lint:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1
+      - name: Python Code Quality and Lint
+        uses: ricardochaves/python-lint@v1.1.0
+        with:
+          python-root-list: "timelapse"
+
   build:
     runs-on: macos-latest
     steps:
