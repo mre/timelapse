@@ -13,9 +13,9 @@ from AppKit import NSObject, NSMenu, NSApplication, NSStatusBar, \
 from PyObjCTools import AppHelper
 from Foundation import NSUserDefaults
 
-from .encoder import Encoder # Creates timelapse video
-from .recorder import Recorder # Takes screenshots
-from .notify import notify # Shows notifications/alerts
+from timelapse.encoder import Encoder # Creates timelapse video
+from timelapse.recorder import Recorder # Takes screenshots
+from timelapse.notify import notify # Shows notifications/alerts
 
 NOT_FOUND_MSG = """
 The ffmpeg command was not found;
@@ -74,6 +74,7 @@ class Timelapse(NSObject):
         self.recorder_output_basedir: str = os.path.join(
             DIR_BASE, dir_pictures, dir_app)
         self.encoder_output_basedir: str = os.path.join(DIR_BASE, dir_movies)
+        self.image_dir: str = self.create_dir(self.recorder_output_basedir)
 
         # Create a reference to the statusbar (menubar)
         self.statusbar = NSStatusBar.systemStatusBar()
@@ -88,16 +89,16 @@ class Timelapse(NSObject):
         self.statusitem.setMenu_(self.menu)
 
         # Load icons and show them in the statusbar
-        self.loadIcons()
-        self.setStatus()
+        self.load_icons()
+        self.set_status()
 
-    def loadIcons(self) -> None:
+    def load_icons(self) -> None:
         self.icon_recording = NSImage.alloc().initWithContentsOfFile_(
             os.path.join(dir_resources, image_recording))
         self.icon_idle = NSImage.alloc().initWithContentsOfFile_(
             os.path.join(dir_resources, image_idle))
 
-    def setStatus(self) -> None:
+    def set_status(self) -> None:
         """ Sets the image and menu text according to recording status """
         if self.recording:
             self.statusitem.setImage_(self.icon_recording)
@@ -130,12 +131,11 @@ class Timelapse(NSObject):
                     self.image_dir, self.encoder_output_basedir)
                 self.encoder.start()
         else:
-            self.image_dir: str = self.create_dir(self.recorder_output_basedir)
             self.recorder = Recorder(self.image_dir, screenshot_interval)
             self.recorder.start()
             notify("Timelapse started", "The recording has started")
         self.recording: bool = not self.recording
-        self.setStatus()
+        self.set_status()
 
     @objc.python_method
     def create_dir(self, base_dir: str) -> str:
@@ -170,6 +170,8 @@ class Timelapse(NSObject):
             # for the user to puzzle over.
         except OSError:
             print(NOT_FOUND_MSG)
+            notify("Timelapse", "ERROR: ffmpeg not found")
+            exit()
 
 def main():
     app = NSApplication.sharedApplication()

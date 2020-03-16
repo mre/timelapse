@@ -6,7 +6,7 @@ from threading import Thread  # Encoder is a thread
 import subprocess
 from datetime import datetime
 from typing import List
-from .notify import notify  # Shows notifications/alerts
+from timelapse.notify import notify  # Shows notifications/alerts
 
 
 class Encoder(Thread):
@@ -45,7 +45,7 @@ class Encoder(Thread):
         print(' '.join(command))
         try:
             subprocess.run(command, capture_output=True, check=True)
-        except subprocess.CalledProcessError as e:
-            notify("Timelapse: ffmpeg not found.", e.stderr.decode('utf-8'))
+        except subprocess.CalledProcessError as ffmpeg_error:
+            notify("Timelapse: ffmpeg not found.", ffmpeg_error.stderr.decode('utf-8'))
         else:
             notify("Timelapse", f"Movie saved to `{self.output}`")
