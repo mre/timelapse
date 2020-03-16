@@ -18,7 +18,7 @@ install: ## Install app dependencies
 
 .PHONY: run
 run: clean ## Run application in shell
-	poetry run timelapse
+	poetry run
 
 .PHONY: test
 test: clean ## Run pytest

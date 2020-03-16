@@ -3,13 +3,13 @@ import time
 import subprocess
 from pathlib import Path
 
-from PyObjCTools import AppHelper
 from AppKit import *
-
-from notify import notify  # Shows notifications/alerts
-from encoder import Encoder, not_found_msg  # Creates timelapse video
-from recorder import Recorder  # Takes screenshots
+from PyObjCTools import AppHelper
 from Foundation import NSUserDefaults
+
+from .encoder import Encoder, not_found_msg  # Creates timelapse video
+from .recorder import Recorder  # Takes screenshots
+from .notify import * # Shows notifications/alerts
 
 
 def dark_mode() -> bool:
@@ -155,9 +155,11 @@ class Timelapse(NSObject):
         except OSError:
             print(not_found_msg)
 
-
-if __name__ == "__main__":
+def main():
     app = NSApplication.sharedApplication()
     delegate = Timelapse.alloc().init()
     app.setDelegate_(delegate)
     AppHelper.runEventLoop()
+
+if __name__ == "__main__":
+    main()

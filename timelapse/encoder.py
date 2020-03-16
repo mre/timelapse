@@ -5,7 +5,7 @@ import os
 import glob
 import fnmatch
 import shutil
-from notify import notify  # Shows notifications/alerts
+from .notify import notify  # Shows notifications/alerts
 from typing import List
 
 not_found_msg = """
