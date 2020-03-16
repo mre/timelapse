@@ -4,6 +4,7 @@ which initializes the recorder and the encoder.
 """
 
 import os
+import sys
 import time
 import subprocess
 from pathlib import Path
@@ -147,9 +148,9 @@ class Timelapse(NSObject):
         try:
             print(f"Output directory: {output_dir}")
             os.makedirs(output_dir)
-        except OSError as e:
-            notify("Timelapse error", f"Error while creating directory: {e}")
-            exit()
+        except OSError as os_error:
+            notify("Timelapse error", f"Error while creating directory: {os_error}")
+            sys.exit()
         return output_dir
 
     @objc.python_method
@@ -171,7 +172,7 @@ class Timelapse(NSObject):
         except OSError:
             print(NOT_FOUND_MSG)
             notify("Timelapse", "ERROR: ffmpeg not found")
-            exit()
+            sys.exit()
 
 def main():
     app = NSApplication.sharedApplication()
