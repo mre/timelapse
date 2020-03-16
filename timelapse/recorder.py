@@ -1,26 +1,32 @@
+"""
+Recorder is responsible for taking regular (1 second) screenshots of the
+screen where the mouse is located.
+"""
+
 import os
 import subprocess  # Taking screenshot
-import datetime  # Filename
 from multiprocessing import Process, Event
-from PyObjCTools import AppHelper
 from AppKit import NSEvent, NSScreen, NSMouseInRect
 
-
 def get_screen_with_mouse_index() ->int:
-    mouseLocation = NSEvent.mouseLocation()
+    """
+    Get the ID for the screen where the mouse is currently on.
+    """
+    mouse_location = NSEvent.mouseLocation()
     screens = NSScreen.screens()
     for i, screen in enumerate(screens):
-        if NSMouseInRect(mouseLocation, screen.frame(), False):
+        if NSMouseInRect(mouse_location, screen.frame(), False):
             return i
     return 0
 
 
 class Recorder(Process):
     """
-    Takes a screenshot every 'interval' seconds and saves it into output_dir or a subdirectory thereof.
+    Takes a screenshot every 'interval' seconds and saves it into output_dir or
+    a subdirectory thereof.
     """
 
-    def __init__(self, output_dir: str, interval: int=4) -> None:
+    def __init__(self, output_dir: str, interval: int = 4) -> None:
         # Initialize the thread
         Process.__init__(self)
 
@@ -54,6 +60,7 @@ class Recorder(Process):
         self._stopped.set()
 
     def get_recording_time(self) ->str:
+        """ Get the total recording time as a human-readable string """
         return str(self.screenshot_counter * self.interval) + " seconds"
 
     def get_filename(self) ->str:
@@ -67,6 +74,6 @@ class Recorder(Process):
         filename: str = self.get_filename()
         subprocess.run(
             ['screencapture', '-S', '-o', '-x', '-D',
-                str(get_screen_with_mouse_index() + 1), '-t', self.format, filename],
+             str(get_screen_with_mouse_index() + 1), '-t', self.format, filename],
             check=True)
         self.screenshot_counter += 1

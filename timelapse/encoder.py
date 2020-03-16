@@ -1,19 +1,12 @@
+"""
+Deals with encoding the screenshots to video using ffmpeg.
+"""
+
 from threading import Thread  # Encoder is a thread
 import subprocess
 from datetime import datetime
-import os
-import glob
-import fnmatch
-import shutil
-from .notify import notify  # Shows notifications/alerts
 from typing import List
-
-not_found_msg = """
-The ffmpeg command was not found;
-ffmpeg is used by this script to make a video file from a set of pngs.
-It is typically not installed by default distros , but it is widely available.
-On macOS, try running `brew install ffmpeg`.
-"""
+from .notify import notify  # Shows notifications/alerts
 
 
 class Encoder(Thread):
@@ -48,16 +41,11 @@ class Encoder(Thread):
                               "-vf", "format=yuv420p",
                               "-vcodec", "h264",
                               self.output]
+        notify("Timelapse", f"Creating timelapse. This might take a while")
+        print(' '.join(command))
         try:
-            notify("Timelapse", f"Creating timelapse. This might take a while")
-            print(' '.join(command))
-            try:
-                completed = subprocess.run(
-                    command, capture_output=True, check=True)
-            except subprocess.CalledProcessError as e:
-                notify("Timelapse: ffmpeg not found.", e.stderr.decode('utf-8'))
-            else:
-                notify("Timelapse", f"Movie saved to `{self.output}`")
-        except Exception as e:
-            print("Main exception", e)
-            notify("Timelapse Error", e)
+            subprocess.run(command, capture_output=True, check=True)
+        except subprocess.CalledProcessError as e:
+            notify("Timelapse: ffmpeg not found.", e.stderr.decode('utf-8'))
+        else:
+            notify("Timelapse", f"Movie saved to `{self.output}`")

@@ -1,18 +1,34 @@
+"""
+The main entrypoint of the application,
+which initializes the recorder and the encoder.
+"""
+
 import os
 import time
 import subprocess
 from pathlib import Path
 
-from AppKit import *
+from AppKit import NSObject, NSMenu, NSApplication, NSStatusBar, \
+                   NSMenuItem, NSImage, NSVariableStatusItemLength, objc
 from PyObjCTools import AppHelper
 from Foundation import NSUserDefaults
 
-from .encoder import Encoder, not_found_msg  # Creates timelapse video
-from .recorder import Recorder  # Takes screenshots
-from .notify import * # Shows notifications/alerts
+from .encoder import Encoder # Creates timelapse video
+from .recorder import Recorder # Takes screenshots
+from .notify import notify # Shows notifications/alerts
+
+NOT_FOUND_MSG = """
+The ffmpeg command was not found;
+ffmpeg is used by this script to make a video file from a set of pngs.
+It is typically not installed by default distros , but it is widely available.
+On macOS, try running `brew install ffmpeg`.
+"""
 
 
 def dark_mode() -> bool:
+    """
+    Check if the user enabled Dark Mode
+    """
     return NSUserDefaults.standardUserDefaults().stringForKey_('AppleInterfaceStyle') == "Dark"
 
 
@@ -20,7 +36,7 @@ def dark_mode() -> bool:
 start_recording: bool = False  # Start recording on launch
 encode: bool = True  # Create video after recording
 screenshot_interval: float = 1.5  # Number of seconds between screenshots
-dir_base = str(Path.home())  # Base directory
+DIR_BASE = str(Path.home())  # Base directory
 dir_app: str = "timelapse"  # Output directory
 dir_pictures: str = "Pictures"  # Place for pictures in filesystem
 dir_movies: str = "Movies"  # Place for movies in filesystem
@@ -56,8 +72,8 @@ class Timelapse(NSObject):
 
         # Set correct output paths
         self.recorder_output_basedir: str = os.path.join(
-            dir_base, dir_pictures, dir_app)
-        self.encoder_output_basedir: str = os.path.join(dir_base, dir_movies)
+            DIR_BASE, dir_pictures, dir_app)
+        self.encoder_output_basedir: str = os.path.join(DIR_BASE, dir_movies)
 
         # Create a reference to the statusbar (menubar)
         self.statusbar = NSStatusBar.systemStatusBar()
@@ -85,20 +101,20 @@ class Timelapse(NSObject):
         """ Sets the image and menu text according to recording status """
         if self.recording:
             self.statusitem.setImage_(self.icon_recording)
-            self.recordButton.setTitle_(text_recorder_running)
+            self.record_button.setTitle_(text_recorder_running)
             self.statusitem.setToolTip_(tooltip_running)
         else:
             self.statusitem.setImage_(self.icon_idle)
-            self.recordButton.setTitle_(text_recorder_idle)
+            self.record_button.setTitle_(text_recorder_idle)
             self.statusitem.setToolTip_(tooltip_idle)
 
     def createMenu(self) -> NSMenu:
         """ Status bar menu """
         menu = NSMenu.alloc().init()
         # Bind record event
-        self.recordButton = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(
+        self.record_button = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(
             text_recorder_idle, 'startStopRecording:', '')
-        menu.addItem_(self.recordButton)
+        menu.addItem_(self.record_button)
         # Quit event
         menuitem = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(
             'Quit', 'terminate:', '')
@@ -153,7 +169,7 @@ class Timelapse(NSObject):
             # This is a quick and dirty check; it leaves some spurious output
             # for the user to puzzle over.
         except OSError:
-            print(not_found_msg)
+            print(NOT_FOUND_MSG)
 
 def main():
     app = NSApplication.sharedApplication()

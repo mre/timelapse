@@ -24,6 +24,10 @@ run: clean ## Run application in shell
 test: clean ## Run pytest
 	poetry run pytest
 
+.PHONY: lint
+lint: ## Lint project code
+	poetry run pylint timelapse
+
 .PHONY: open
 open: ## Open project folder in Finder
 	open .
