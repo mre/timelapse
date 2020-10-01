@@ -9,7 +9,6 @@
 
 - Simple
 - Open Source
-- Easy to access
 - Low memory and CPU usage
 - Follows the cursor across screens while recording
 
