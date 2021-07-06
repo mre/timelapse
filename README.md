@@ -23,7 +23,7 @@
    there.
    ![A demonstration of starting and stopping a recording from the menubar](timelapse.gif)
 
-timelapse will create a video for you in your `Movies` folder.
+timelapse will create a video for you **in your `Movies` folder**.
 
 ## Development
 
