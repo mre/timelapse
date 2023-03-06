@@ -2,6 +2,30 @@
 
 ...a little macOS app that records your screen to make a timelapse.
 
+
+----
+
+# ❤️ Looking for Maintainers
+
+Are you a Python developer who could help with maintaining this project? We'd love to hear from you!  
+
+There are some critical [open issues](https://github.com/mre/timelapse/issues) with this tool, which 
+we need help with. Please take a look and reach out by replying to [this issue](https://github.com/mre/timelapse/issues/59) or by sending in pull requests.
+Contributors will get maintainer rights after a while and the repository can be transitioned to a Github organization
+or a different user account. Thanks!
+
+----
+
+
+
+
+
+
+
+
+
+
+
 ![CI](https://github.com/mre/timelapse/workflows/CI/badge.svg)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/mre/timelapse)
 
