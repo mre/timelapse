@@ -43,7 +43,22 @@ jobs:
           chmod +x "$GOBIN/swiftlint"
           test "$("$GOBIN/swiftlint" version)" = "0.65.1"
           echo "$GOBIN" >> "$GITHUB_PATH"
-          go install github.com/rhysd/actionlint/cmd/actionlint@v1.7.12
+          case "$(uname -m)" in
+            arm64)
+              architecture=arm64
+              checksum=aba9ced2dee8d27fecca3dc7feb1a7f9a52caefa1eb46f3271ea66b6e0e6953f
+              ;;
+            x86_64)
+              architecture=amd64
+              checksum=5b44c3bc2255115c9b69e30efc0fecdf498fdb63c5d58e17084fd5f16324c644
+              ;;
+            *) echo "Unsupported runner architecture"; exit 1 ;;
+          esac
+          curl --fail --location --retry 3 \
+            "https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_darwin_${architecture}.tar.gz" \
+            --output "$RUNNER_TEMP/actionlint.tar.gz"
+          echo "$checksum  $RUNNER_TEMP/actionlint.tar.gz" | shasum -a 256 --check
+          tar -xzf "$RUNNER_TEMP/actionlint.tar.gz" -C "$GOBIN" actionlint
       - name: Check workflow syntax
         env:
           ACTIONLINT: ${{ runner.temp }}/ci-tools/actionlint
