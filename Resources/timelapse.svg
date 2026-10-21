@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 18 18" role="img" aria-labelledby="title">
+  <title id="title">Timelapse</title>
+  <style>
+    :root { color: #24292f; }
+    @media (prefers-color-scheme: dark) {
+      :root { color: #f0f6fc; }
+    }
+  </style>
+  <circle cx="9" cy="9" r="7.3" fill="none" stroke="currentColor" stroke-width="1.4"/>
+  <path d="M 9 9 L 5.393755 5.393755 A 5.1 5.1 0 1 0 9 3.9 Z" fill="currentColor"/>
+</svg>

@@ -1,0 +1,21 @@
+# swift format owns layout; SwiftLint checks correctness and common mistakes.
+included:
+  - Sources
+  - Tests
+only_rules:
+  - class_delegate_protocol
+  - compiler_protocol_init
+  - duplicate_conditions
+  - duplicate_enum_cases
+  - duplicate_imports
+  - duplicated_key_in_dictionary_literal
+  - force_cast
+  - force_try
+  - return_value_from_void_function
+  - unavailable_function
+
+  - unused_closure_parameter
+  - unused_control_flow_label
+  - unused_optional_binding
+  - valid_ibinspectable
+  - weak_delegate

@@ -1,0 +1,121 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref_type != 'tag' }}
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+
+jobs:
+  checks:
+    name: Format, lint, and test
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - name: Set up lint tools
+        env:
+          GOBIN: ${{ runner.temp }}/ci-tools
+        run: |
+          python3 -m pip install -r scripts/requirements-ci.txt
+          test "$(swiftlint version)" = "0.65.1"
+          go install github.com/rhysd/actionlint/cmd/actionlint@v1.7.12
+      - name: Check workflow syntax
+        env:
+          ACTIONLINT: ${{ runner.temp }}/ci-tools/actionlint
+        run: '"$ACTIONLINT" .github/workflows/*.yml'
+      - name: Check formatting and lint
+        run: make lint
+      - name: Test Swift and packaging scripts
+        run: make test
+
+  package:
+    name: Build universal app
+    needs: checks
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - name: Build, verify, and archive
+        env:
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import subprocess
+
+          version = os.environ["REF_NAME"].removeprefix("v") if os.environ["REF_TYPE"] == "tag" else "0.0.0"
+          subprocess.run([
+              "python3", "scripts/build-app.py", "--universal", "--archive",
+              "--version", version, "--build-number", os.environ["GITHUB_RUN_NUMBER"],
+          ], check=True)
+          PY
+      - name: Verify archive checksum
+        working-directory: dist
+        run: shasum -a 256 --check ./*.sha256
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: macos-universal
+          path: |
+            dist/*.zip
+            dist/*.sha256
+          if-no-files-found: error
+          retention-days: 7
+
+  release:
+    name: Publish tagged release
+    needs: package
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: macos-universal
+          path: dist
+      - name: Verify downloaded archive
+        working-directory: dist
+        run: sha256sum --check ./*.sha256
+      - name: Publish ZIP and checksum
+        working-directory: dist
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          if gh release view "$RELEASE_TAG" --json isDraft --jq '.isDraft' > release-state.txt; then
+            if ! grep -qx true release-state.txt; then
+              echo "Release already published; refusing to replace its assets."
+              exit 1
+            fi
+          else
+            gh release create "$RELEASE_TAG" --verify-tag --draft --generate-notes \
+              --title "Timelapse $RELEASE_TAG" \
+              --notes "Universal macOS app for Apple Silicon and Intel. Requires macOS 15 or later. This build is ad-hoc signed, not Developer ID signed or notarized; macOS may require approval in Privacy & Security before opening it."
+          fi
+          gh release upload "$RELEASE_TAG" ./*.zip ./*.sha256 --clobber
+          gh release edit "$RELEASE_TAG" --draft=false
