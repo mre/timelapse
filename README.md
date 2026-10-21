@@ -15,7 +15,7 @@ It uses Apple's native ScreenCaptureKit and AVFoundation frameworks to record yo
   <img src="Resources/screenshots/ready-light.png" alt="Timelapse in light mode: choose a display and capture interval, then start recording." width="288" height="150" align="top">
   <img src="Resources/screenshots/recording-dark.png" alt="Timelapse recording in dark mode: movie duration, captured frames, Pause, and Stop &amp; Save." width="288" height="139" align="top">
 </p>
-<p align="center"><sub>Ready to record in light mode; recording in dark mode. Shown with sample recording data.</sub></p>
+<p align="center"><sub>Ready to record in light mode; recording in dark mode.</sub></p>
 
 ## Goals
 
