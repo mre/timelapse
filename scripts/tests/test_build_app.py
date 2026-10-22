@@ -76,10 +76,12 @@ class PackagingTests(unittest.TestCase):
                 "CFBundleShortVersionString": "0.1.0",
                 "CFBundleVersion": "7",
                 "CFBundleIdentifier": "dev.example.timelapse",
+                "CFBundleIconFile": "AppIcon",
                 "Other": {"Enabled": True},
             }
         )
         self.source.write_bytes(self.original)
+        (self.source.parent / "AppIcon.icns").write_bytes(b"fake icon")
         self.bin = self.root / "bin"
         self.bin.mkdir()
         (self.bin / "Timelapse").write_bytes(b"fake executable")
@@ -104,6 +106,9 @@ class PackagingTests(unittest.TestCase):
             raise subprocess.CalledProcessError(1, command)
         if command[:2] == ("codesign", "--force"):
             self.signed_info = self.info.read_bytes()
+            self.assertEqual(
+                (self.app / "Contents" / "Resources" / "AppIcon.icns").read_bytes(), b"fake icon"
+            )
         if command[0] == "ditto":
             self.assertEqual(command[1:5], ("-c", "-k", "--sequesterRsrc", "--keepParent"))
             self.assertEqual(self.info.read_bytes(), self.signed_info)
@@ -171,6 +176,10 @@ class PackagingTests(unittest.TestCase):
             info = plistlib.loads(info_bytes)
             self.assertEqual(info["CFBundleShortVersionString"], "2.3.4")
             self.assertEqual(info["CFBundleVersion"], "42")
+            self.assertEqual(info["CFBundleIconFile"], "AppIcon")
+            self.assertEqual(
+                zipped.read("Timelapse.app/Contents/Resources/AppIcon.icns"), b"fake icon"
+            )
             self.assertEqual(
                 zipped.read("Timelapse.app/Contents/MacOS/Timelapse"),
                 b"fake executable",

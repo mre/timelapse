@@ -97,6 +97,7 @@ def main(argv=None):
     resources = app / "Contents" / "Resources"
     macos.mkdir(parents=True)
     resources.mkdir()
+    shutil.copy2(ROOT / "Resources" / "AppIcon.icns", resources / "AppIcon.icns")
     binary = macos / "Timelapse"
     shutil.copy2(binary_directory / "Timelapse", binary)
     info = app / "Contents" / "Info.plist"

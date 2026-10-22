@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <title>Timelapse app icon</title>
+  <defs>
+    <linearGradient id="blue" x1="0" y1="0" x2="0.8" y2="1">
+      <stop offset="0" stop-color="#55b9f3"/>
+      <stop offset="1" stop-color="#1761d5"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="12" stdDeviation="12" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <rect x="96" y="96" width="832" height="832" rx="184"
+        fill="url(#blue)" filter="url(#shadow)"/>
+  <rect x="97" y="97" width="830" height="830" rx="183"
+        fill="none" stroke="white" stroke-opacity="0.2" stroke-width="2"/>
+  <g transform="translate(224 224) scale(32)">
+    <circle xmlns="http://www.w3.org/2000/svg" cx="9" cy="9" r="7.3" fill="none" stroke="white" stroke-width="1.4" />
+  
+<path xmlns="http://www.w3.org/2000/svg" d="M 9 9 L 5.393755 5.393755 A 5.1 5.1 0 1 0 9 3.9 Z" fill="white" />
+
+  </g>
+</svg>
